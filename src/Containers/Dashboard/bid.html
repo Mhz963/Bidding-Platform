@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Freelancing Bidding Platform</title>
+    <style>
+        /* CSS styles */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+
+        .project {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 10px;
+            margin-bottom: 10px;
+            background-color: #fff;
+        }
+
+        .bid-form {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Bidding Platform</h1>
+
+        <div id="projects"></div>
+
+        <div class="bid-form">
+            <h2>Place Bid</h2>
+            <form id="bidForm">
+                <label for="projectId">Project ID:</label>
+                <input type="text" id="projectId" name="projectId" required><br><br>
+                <label for="bidAmount">Bid Amount ($):</label>
+                <input type="number" id="bidAmount" name="bidAmount" min="0" step="0.01" required><br><br>
+                <button type="submit">Submit Bid</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Define an array to store projects
+        let projects = [];
+
+        // Function to render projects
+        function renderProjects() {
+            const projectsDiv = document.getElementById('projects');
+            projectsDiv.innerHTML = ''; // Clear existing content
+
+            projects.forEach(project => {
+                const projectDiv = document.createElement('div');
+                projectDiv.classList.add('project');
+                projectDiv.innerHTML = `
+                    <h2>${project.title}</h2>
+                    <p>${project.description}</p>
+                    <p>Budget: $${project.budget}</p>
+                    <button onclick="placeBid(${project.id})">Place Bid</button>
+                `;
+                projectsDiv.appendChild(projectDiv);
+            });
+        }
+
+        // Function to handle form submission for placing bid
+        function submitBid(event) {
+            event.preventDefault(); // Prevent form submission
+            const projectId = document.getElementById('projectId').value;
+            const bidAmount = parseFloat(document.getElementById('bidAmount').value);
+            if (isNaN(bidAmount) || bidAmount <= 0) {
+                alert('Please enter a valid bid amount.');
+                return;
+            }
+            // Here you can perform further validation or make an API call to submit the bid
+            alert(`Bid placed successfully for project ID ${projectId} with amount $${bidAmount}.`);
+            document.getElementById('bidForm').reset(); // Clear form fields
+        }
+
+        // Function to place bid on a project
+        function placeBid(projectId) {
+            const bidAmount = prompt('Enter your bid amount:');
+            if (bidAmount !== null) {
+                // Here you can perform validation and make an API call to submit the bid
+                alert(`Bid placed successfully for project ID ${projectId} with amount $${bidAmount}.`);
+            }
+        }
+
+        // Dummy data for projects (replace with actual data from backend)
+        projects = [
+            { id: 1, title: 'Project 1', description: 'Description of project 1', budget: 100 },
+            { id: 2, title: 'Project 2', description: 'Description of project 2', budget: 200 },
+            { id: 3, title: 'Project 3', description: 'Description of project 3', budget: 300 }
+        ];
+
+        // Call renderProjects function to display projects
+        renderProjects();
+
+        // Add event listener to the bid form for form submission
+        document.getElementById('bidForm').addEventListener('submit', submitBid);
+    </script>
+</body>
+</html>

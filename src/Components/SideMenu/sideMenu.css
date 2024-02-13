@@ -1,0 +1,28 @@
+.menuItem
+    {
+    border:1px solid white;
+     color:white;
+     font-weight:bold; 
+     margin:1px;
+      box-shadow:1px 2px 2px gray;
+      cursor: pointer;
+    }
+.menuItem:hover{
+    background-color: white;
+    color:blue;
+}
+.activeMenuItem{
+    background-color: white;
+    color:blue; 
+    font-weight: bold;
+    border-block-end-color:red;
+}
+    
+.menu{
+    width:250px; background-color:blue;height:100vh; border:2px solid white;
+             box-shadow:2px 5px 5px gray; display:flex; flex-direction:column;
+             
+}
+/* .menu:hover{
+    display:none;
+} */
