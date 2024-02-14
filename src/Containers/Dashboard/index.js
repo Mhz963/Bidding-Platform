@@ -75,6 +75,34 @@ class Dashboard extends React.Component {
         alert(`Bid placed successfully for project ID ${projectId} with amount $${bidAmount}.`);
         document.getElementById('bidForm').reset(); // Clear form fields
     }
+
+    componentDidMount() {
+        // Fetch projects data from projects.json
+        fetch('projects.json')
+            .then(response => response.json())
+            .then(data => {
+                // Update state with fetched projects data
+                this.setState({ projects: data });
+            })
+            .catch(error => {
+                console.error('Error fetching projects:', error);
+            });
+    }
+
+    fetchProjects = async () => {
+        try {
+            const response = await fetch('projects.json'); // Assuming projects.json is in the same directory
+            if (!response.ok) {
+                throw new Error('Failed to fetch projects');
+            }
+            const data = await response.json();
+            this.setState({ projects: data });
+        } catch (error) {
+            console.error('Error fetching projects:', error);
+            this.setState({ error: error.message });
+        }
+    }
+
     render() {
         if (this.props.Data === null) {
             this.props.history.push('/');
@@ -98,20 +126,48 @@ class Dashboard extends React.Component {
                 return (
                     <PageBase previlige={this.props.previlige} dashboardProps={this.props}>
                         <h1>{this.props.previlige}</h1>
-                        <div>
-                            <h2>This is Admin Dashboard</h2>
-                            {/* Form for admin to submit new project */}
-                            <form onSubmit={this.submitNewProject}>
-                                <label htmlFor="newProjectTitle">Title:</label>
-                                <input type="text" id="newProjectTitle" name="newProjectTitle" value={this.state.newProjectTitle} onChange={this.handleInputChange} required /><br /><br />
-                                <label htmlFor="newProjectDescription">Description:</label>
-                                <textarea id="newProjectDescription" name="newProjectDescription" value={this.state.newProjectDescription} onChange={this.handleInputChange} required /><br /><br />
-                                <label htmlFor="newProjectBudget">Budget ($):</label>
-                                <input type="number" id="newProjectBudget" name="newProjectBudget" value={this.state.newProjectBudget} onChange={this.handleInputChange} min="0" step="0.01" required /><br /><br />
-                                <button type="submit">Submit Project</button>
-                            </form>
-                        </div>
-                    </PageBase>
+                        {this.props.menuItem === 'Dashboard' ? (
+                            <div>
+                                {/* <h1>{this.props.Data !== null ? this.props.Data.email : 'anonymous'}</h1> */}
+
+                                <h2>This is User Dashboard</h2>
+
+
+                            </div>
+                        ) : this.props.menuItem === 'My Projects' ? (
+                            <div>
+                                <h2>My Projects</h2>
+                                <div>
+                                    {this.state.projects.map((project, index) => (
+                                        <div key={index}>
+                                            <h3>Title: {project.title}</h3>
+                                            <p>Description: {project.description}</p>
+                                            <p>Budget: ${project.budget}</p>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+
+                        ) : (
+                            <div>
+                                <h2>This is Admin Dashboard</h2>
+                                {/* Form for admin to submit new project */}
+                                <form onSubmit={this.submitNewProject}>
+                                    <label htmlFor="newProjectTitle">Title:</label>
+                                    <input type="text" id="newProjectTitle" name="newProjectTitle" value={this.state.newProjectTitle} onChange={this.handleInputChange} required /><br /><br />
+                                    <label htmlFor="newProjectDescription">Description:</label>
+                                    <textarea id="newProjectDescription" name="newProjectDescription" value={this.state.newProjectDescription} onChange={this.handleInputChange} required /><br /><br />
+                                    <label htmlFor="newProjectBudget">Budget ($):</label>
+                                    <input type="number" id="newProjectBudget" name="newProjectBudget" value={this.state.newProjectBudget} onChange={this.handleInputChange} min="0" step="0.01" required /><br /><br />
+                                    <button type="submit">Submit Project</button>
+                                </form>
+
+
+
+                            </div >
+                        )
+                        }
+                    </PageBase >
                 );
             }
             if (this.props.previlige === 'USER') {
