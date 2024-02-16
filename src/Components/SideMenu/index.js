@@ -16,8 +16,8 @@ class SideMenu extends React.Component {
         ]
         let MenuItems2 = [
             { title: 'Dashboard' },
-            { title: 'Pending Leave Requests' },
-            { title: 'Approved Leaves' },
+            { title: 'Bid for projects' },
+            { title: 'My Projects' },
             { title: 'Log out' }
         ]
 
