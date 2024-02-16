@@ -4,9 +4,12 @@ import PageBase from './../PageBase';
 import { parseLeaveData } from './utils';
 import { Link } from 'react-router-dom';
 
+
 class Dashboard extends React.Component {
     constructor(props) {
         super(props);
+
+        //  this.getAllProject();
         this.state = {
             projects: [], // Initialize projects as empty array 
             newProjectTitle: '',
@@ -20,6 +23,28 @@ class Dashboard extends React.Component {
         this.setState({
             [event.target.name]: event.target.value
         });
+    }
+
+    // function to call backend api of get all projects
+    getAllProjects = async () => {
+        try {
+            const response = await fetch('http://localhost:3001/api/projects', { // Update the URL to point to port 3001
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            const data = await response.json();
+            console.log("projects data", data); // Display success message
+            this.setState({ projects: data });
+
+
+        } catch (error) {
+            console.error('Error in getting  project:', error);
+            alert('Error in getting  project');
+        }
+
+
     }
 
     // Function to handle submission of new project by admin
@@ -78,6 +103,8 @@ class Dashboard extends React.Component {
 
     componentDidMount() {
         // Fetch projects data from projects.json
+        this.getAllProjects()
+        /*
         fetch('projects.json')
             .then(response => response.json())
             .then(data => {
@@ -87,9 +114,11 @@ class Dashboard extends React.Component {
             .catch(error => {
                 console.error('Error fetching projects:', error);
             });
+            */
     }
 
     fetchProjects = async () => {
+        alert(1);
         try {
             const response = await fetch('projects.json'); // Assuming projects.json is in the same directory
             if (!response.ok) {
@@ -123,6 +152,7 @@ class Dashboard extends React.Component {
 
             let finalData = parseLeaveData(dashboardData);
             if (this.props.previlige === 'ADMIN') {
+
                 return (
                     <PageBase previlige={this.props.previlige} dashboardProps={this.props}>
                         <h1>{this.props.previlige}</h1>
@@ -130,7 +160,28 @@ class Dashboard extends React.Component {
                             <div>
                                 {/* <h1>{this.props.Data !== null ? this.props.Data.email : 'anonymous'}</h1> */}
 
-                                <h2>This is User Dashboard</h2>
+                                <h2>This is Admin Dashboard </h2>
+                                <div>
+                                    <table className="custom-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Title</th>
+                                                <th>Description</th>
+                                                <th>Budget</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {this.state.projects.map((project, index) => (
+                                                <tr key={index}>
+                                                    <td>{project.title}</td>
+                                                    <td>{project.description}</td>
+                                                    <td>${project.budget}</td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+
 
 
                             </div>
@@ -182,21 +233,27 @@ class Dashboard extends React.Component {
 
 
                             </div>
+                        ) : this.props.menuItem === 'My Projects' ? (
+                            <div>
+                                <h2>My Projects</h2>
+
+                            </div>
+
                         ) : (
 
                             <div className="container" style={{ marginLeft: '20px' }}>
                                 <h1>Bidding Platform</h1>
                                 <div id="projects">
                                     {this.state.projects.map(project => (
-                                        <div className="project" key={project.id}>
+                                        <div className="project" key={project._id}>
                                             <h2>{project.title}</h2>
                                             <p>{project.description}</p>
                                             <p>Budget: ${project.budget}</p>
-                                            <button onClick={() => this.placeBid(project.id)}>Place Bid</button>
+                                            <button onClick={() => this.placeBid(project._id)}>Place Bid</button>
                                         </div>
                                     ))}
                                 </div>
-                                <div className="bid-form">
+                                {/* <div className="bid-form">
                                     <h2>Place Bid</h2>
                                     <form id="bidForm" onSubmit={this.submitBid}>
                                         <label htmlFor="projectId">Project ID:</label>
@@ -205,7 +262,7 @@ class Dashboard extends React.Component {
                                         <input type="number" id="bidAmount" name="bidAmount" min="0" step="0.01" required /><br /><br />
                                         <button type="submit">Submit Bid</button>
                                     </form>
-                                </div>
+                                </div> */}
                             </div>
                         )}
                     </PageBase>
